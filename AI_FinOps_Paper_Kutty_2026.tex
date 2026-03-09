@@ -1,0 +1,845 @@
+\documentclass[11pt,twocolumn]{article}
+
+% ── Packages ────────────────────────────────────────────────────
+\usepackage[margin=1in]{geometry}
+\usepackage{times}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{abstract}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{balance}
+\usepackage{natbib}
+\usepackage{mdframed}
+
+% ── Colours ─────────────────────────────────────────────────────
+\definecolor{teal}{RGB}{14,124,123}
+\definecolor{navy}{RGB}{27,42,74}
+\definecolor{amber}{RGB}{232,168,56}
+\definecolor{lightgray}{RGB}{240,244,248}
+\definecolor{darkgray}{RGB}{51,65,85}
+
+% ── Hyperref setup ───────────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  linkcolor=navy,
+  citecolor=teal,
+  urlcolor=teal,
+  pdftitle={AI FinOps: Why Cloud Financial Governance Fails for Intelligent Systems},
+  pdfauthor={Sathiyan Kutty}
+}
+
+% ── Section heading style ────────────────────────────────────────
+\titleformat{\section}{\large\bfseries\color{navy}}{{\thesection}}{1em}{}[\color{teal}\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries\color{darkgray}}{\thesubsection}{1em}{}
+\titlespacing{\section}{0pt}{10pt}{4pt}
+\titlespacing{\subsection}{0pt}{6pt}{2pt}
+
+% ── Callout box (mdframed) ───────────────────────────────────────
+\newmdenv[
+  backgroundcolor=lightgray,
+  linecolor=teal,
+  linewidth=1.5pt,
+  leftline=true, rightline=false, topline=false, bottomline=false,
+  innerleftmargin=8pt, innerrightmargin=8pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+  skipabove=6pt, skipbelow=6pt
+]{callout}
+
+% ── Header / footer ─────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{darkgray}{Kutty \textbar\ AI FinOps}}
+\fancyhead[R]{\small\textcolor{darkgray}{FinOps Foundation White Paper \textbar\ 2026}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Abstract style ───────────────────────────────────────────────
+\renewcommand{\abstractnamefont}{\large\bfseries\color{navy}}
+\renewcommand{\abstracttextfont}{\small}
+\setlength{\absleftindent}{0pt}
+\setlength{\absrightindent}{0pt}
+
+% ── Caption style ────────────────────────────────────────────────
+\captionsetup{font=small, labelfont={bf,color=navy}, textfont=it}
+
+% ── Table column types ───────────────────────────────────────────
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ─────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── Title block ──────────────────────────────────────────────────
+\twocolumn[{%
+\begin{@twocolumnfalse}
+
+\vspace*{4pt}
+{\color{teal}\rule{\linewidth}{2pt}}
+\vspace{6pt}
+
+{\noindent\LARGE\bfseries\color{navy}
+AI FinOps: Why Cloud Financial Governance Fails\\[4pt]
+for Intelligent Systems --- and a Framework\\[4pt]
+for What Replaces It}
+
+\vspace{10pt}
+
+{\noindent\large\bfseries Sathiyan Kutty}\\[2pt]
+{\noindent\normalsize Chief AI Officer, EMIDS Healthcare IT\\
+\href{https://www.linkedin.com/in/skutty/}{linkedin.com/in/skutty}
+\hfill
+\textit{Submitted to the FinOps Foundation, March 2026}}
+
+\vspace{8pt}
+{\color{teal}\rule{\linewidth}{0.6pt}}
+\vspace{10pt}
+
+% ── Abstract ────────────────────────────────────────────────────
+\begin{onecolabstract}
+\noindent
+Enterprise AI spending is growing at an unprecedented rate, yet the financial governance
+frameworks organisations rely on were designed for a fundamentally different cost structure.
+Cloud FinOps --- the dominant discipline for managing cloud infrastructure expenditure ---
+operates on compute-hour billing, resource-level attribution, and predictable linear
+scaling. AI systems, by contrast, are denominated in tokens, attributed at the
+request level, and exhibit nonlinear cost dynamics driven by reasoning chains and
+autonomous agentic loops that can multiply per-session consumption by one to three
+orders of magnitude. These are architectural differences, not implementation gaps,
+and they render existing Cloud FinOps frameworks insufficient for governing AI spend.
+
+This paper makes four original contributions. First, it provides a formal definition
+of \textit{AI FinOps} as a distinct organisational discipline. Second, it introduces
+an eight-dimension AI Cost Taxonomy that identifies every measurable cost category
+in a production AI deployment and maps each to an attribution mechanism and
+optimisation lever. Third, it proposes a three-level AI FinOps Maturity Model
+--- Reactive, Managed, and Optimised --- with specific, assessable capabilities
+at each level. Fourth, it defines five governance questions that constitute a
+minimum viable baseline assessment for any organisation deploying AI at scale.
+Empirical grounding draws on published benchmarks, Gartner and Uptime Institute
+research, and anonymised patterns observed across enterprise healthcare AI deployments.
+The paper argues that AI FinOps is not optional overhead: organisations that fail to
+build this capability face a projected 50\% cost penalty relative to governed peers
+by 2030, while those that master it free the capital required to build the proprietary
+AI assets that create durable competitive advantage.
+
+\smallskip
+\noindent\textbf{Keywords:} AI FinOps, token economics, cloud financial governance,
+agentic AI, enterprise AI cost management, maturity model, AI governance
+\end{onecolabstract}
+
+\vspace{10pt}
+{\color{teal}\rule{\linewidth}{0.6pt}}
+\vspace{12pt}
+
+\end{@twocolumnfalse}
+}]
+
+% ─────────────────────────────────────────────────────────────────
+\section{Introduction}
+\label{sec:intro}
+
+Consider the following scenario, representative of a pattern observed across
+enterprise AI deployments: a software engineering team deploys an AI-powered
+research assistant on a Friday afternoon. By Monday morning, the organisation
+has received a cloud invoice for \$250 in token consumption --- roughly 10$\times$
+the team's weekly expectation. No one authorised the spend. No alert fired. No
+governance control existed to prevent it. The system had simply been running,
+autonomously generating reasoning chains and tool calls through a weekend with
+no human in the loop and no budget constraint in place \citep{anthropic2025}.
+
+This scenario is not an edge case. It is an archetype. As enterprise AI deployment
+scales from isolated pilots to production infrastructure, the gap between the rate
+of AI cost accumulation and the rate of governance capability development has
+become a primary financial risk. Gartner projects that organisations failing to
+optimise their AI compute environment will pay a 50\% cost penalty relative to
+governed peers by 2030 \citep{gartner2025forecast}. Total global enterprise AI
+spending reached approximately \$1.5 trillion in 2025, with projections of \$2.5
+trillion in 2026 \citep{gartner2025spending}. The stakes of ungoverned consumption
+at this scale are material.
+
+The dominant financial governance framework for cloud infrastructure --- Cloud
+FinOps, as formalised by the FinOps Foundation \citep{finopsfoundation2023} ---
+was designed to address this kind of governance gap for compute resources. Its
+lifecycle of Inform, Optimise, and Operate has proven effective for managing
+virtual machine fleets, storage systems, and API-based services billed by the
+compute hour. The FinOps Foundation's maturity model, persona framework, and
+capability domains represent genuine institutional knowledge built over a decade
+of enterprise cloud cost management practice.
+
+The central argument of this paper is that Cloud FinOps, despite its maturity,
+is \textit{architecturally insufficient} for AI systems. This is not a criticism
+of Cloud FinOps --- it is an observation that the cost structure of AI is
+different from the cost structure of cloud infrastructure in ways that are
+fundamental, not superficial. Token-based billing, request-level attribution,
+reasoning chain multiplication, and autonomous agentic dynamics introduce
+cost variables that cloud billing APIs do not expose and that cloud cost
+optimisation levers cannot address.
+
+A new discipline is required. We define it as \textit{AI FinOps}: the
+organisational capability comprising the instrumentation, attribution, governance,
+and optimisation practices required to manage AI system costs at the token level,
+connecting AI expenditure to business outcomes across model inference, agentic
+workloads, and training operations.
+
+This paper is structured as follows. Section~\ref{sec:background} reviews the
+evolution of IT financial governance and the theoretical dynamics that make AI
+cost management urgent. Section~\ref{sec:failure} demonstrates, across eight
+dimensions, why Cloud FinOps fails for AI. Section~\ref{sec:framework} presents
+the four original contributions of this paper. Section~\ref{sec:implementation}
+describes a practitioner-validated 30-day implementation sprint. Section~\ref{sec:evidence}
+provides empirical validation. Section~\ref{sec:discussion} discusses strategic
+implications, and Section~\ref{sec:conclusion} concludes.
+
+% ─────────────────────────────────────────────────────────────────
+\section{Background and Related Work}
+\label{sec:background}
+
+\subsection{The Evolution of IT Financial Governance}
+
+The governance of information technology costs has evolved through three
+recognisable phases. The first phase --- IT cost accounting --- emerged from
+ITIL service management frameworks in the 1990s, establishing that IT
+expenditure should be attributed to business units and managed against budgets
+\citep{itilv4}. The second phase --- cloud cost management --- emerged with
+the mainstream adoption of hyperscaler infrastructure in the 2010s, when
+on-demand billing models introduced the risk of unbounded consumption that
+fixed-capacity data centre procurement had naturally constrained. The FinOps
+Foundation formalised this phase, defining a shared vocabulary, a capability
+model, and an organisational practice for cloud cost governance
+\citep{finopsfoundation2023}.
+
+The third phase is now underway: the governance of AI system costs. Like the
+transition from data centre to cloud, this transition is not merely an extension
+of the prior phase. It introduces a qualitatively different cost structure
+--- one denominated in tokens rather than compute hours, exhibiting nonlinear
+rather than linear scaling, and requiring attribution at the level of individual
+model inference requests rather than provisioned resources.
+
+\subsection{The AI Cost Structure: Tokens, Agents, and Nonlinearity}
+
+The fundamental billing unit of AI API services is the token --- approximately
+3--4 characters or 0.75 words in English \citep{openai2024}. Token pricing is
+asymmetric: output tokens are priced at three to five times the rate of input
+tokens due to the sequential, compute-intensive nature of autoregressive
+generation. In 2026, prices range from \$0.05 per million tokens for nano-class
+models to \$168 per million tokens for frontier reasoning models at peak output
+rates --- a spread of three orders of magnitude \citep{introl2025}.
+
+Two cost dynamics distinguish AI from prior cloud cost categories. The first
+is \textit{reasoning chain multiplication}: when extended thinking or chain-of-thought
+reasoning is enabled, models generate internal token streams before producing
+visible output. These reasoning tokens are billed at output rates and can
+multiply per-query cost by a factor of 6--10$\times$ relative to standard inference
+\citep{anthropic2025extended}. The second is \textit{agentic loop compounding}:
+autonomous AI agents executing multi-step tasks accumulate token costs across
+iterations, tool calls, retrieval operations, and state management. Under
+conservative assumptions, a 10-iteration agentic session may consume 50,000--80,000
+tokens per session; under pathological conditions, consumption can exceed
+1 million tokens \citep{introl2025}.
+
+Neither dynamic is visible in standard cloud billing dashboards, and neither
+is addressable through the reservation, savings plan, or right-sizing mechanisms
+that constitute the Cloud FinOps optimisation toolkit.
+
+\subsection{The Jevons Paradox in AI Compute}
+
+The urgency of AI FinOps is compounded by a macroeconomic dynamic first
+identified by William Stanley Jevons in 1865 in the context of coal and steam
+engine efficiency \citep{jevons1865}. Jevons observed that improvements in
+steam engine efficiency did not reduce total coal consumption; instead, lower
+operating costs made steam power economically viable for a broader range of
+applications, expanding total demand. This rebound effect --- now known as
+the Jevons Paradox --- applies with precision to AI token economics.
+
+Token prices have declined approximately 10$\times$ per year since 2022
+\citep{introl2025}. This deflation has not produced declining enterprise AI
+budgets. Instead, each generation of lower prices has enabled a new class of
+AI use case --- ambient documentation, autonomous prior authorisation processing,
+multi-agent research workflows --- that consumes tokens at volumes that absorb
+and exceed the savings from unit cost reductions. Governance is therefore not
+rendered unnecessary by falling prices; it is made \textit{more} necessary, because
+the lower the unit cost, the faster consumption expands when ungoverned.
+
+% ─────────────────────────────────────────────────────────────────
+\section{Why Cloud FinOps Fails for AI}
+\label{sec:failure}
+
+The failure of Cloud FinOps for AI is not a failure of implementation but a
+failure of architectural fit. Table~\ref{tab:comparison} documents eight
+dimensions on which the cost structures of cloud infrastructure and AI systems
+differ in ways that require different governance approaches.
+
+\begin{table*}[t]
+\centering
+\caption{Cloud FinOps vs.\ AI FinOps: Architectural Comparison Across Eight Dimensions}
+\label{tab:comparison}
+\small
+\begin{tabularx}{\textwidth}{L{2.2cm} L{4.6cm} L{4.6cm}}
+\toprule
+\textbf{Dimension} & \textbf{Cloud FinOps} & \textbf{AI FinOps (Required)} \\
+\midrule
+Cost unit &
+  Compute hours, storage GB, API calls &
+  Tokens (input, output, reasoning) --- invisible in standard billing dashboards \\
+\addlinespace
+Attribution model &
+  Resource-level tagging at provisioning time &
+  Request-level instrumentation in application middleware \\
+\addlinespace
+Anomaly detection &
+  Spend threshold alerts on compute/storage &
+  Token rate monitoring, reasoning chain length alerts, iteration count tracking \\
+\addlinespace
+Governance levers &
+  Reserved instances, savings plans, right-sizing &
+  Per-agent token budgets, iteration limits, reasoning token caps, routing policies \\
+\addlinespace
+Budget predictability &
+  High --- VM hours and storage scale linearly &
+  Low --- reasoning chains and agentic loops create nonlinear cost spikes \\
+\addlinespace
+Vendor landscape &
+  1--3 hyperscalers; mature enterprise contracts &
+  5--10 model providers + open-source deployments; rapidly evolving pricing \\
+\addlinespace
+Team ownership &
+  Centralised FinOps team with cloud billing expertise &
+  Distributed: engineering, data science, and finance share accountability \\
+\addlinespace
+Tooling maturity &
+  Mature ecosystem (CloudHealth, Apptio, AWS Cost Explorer) &
+  No dedicated AI FinOps tooling exists as of 2026 \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+The most consequential of these differences is attribution. Cloud FinOps governance
+depends on tagging resources --- virtual machines, buckets, databases --- at
+the time of provisioning. Tags persist throughout the resource lifecycle and are
+automatically captured in billing records. AI cost attribution cannot work this way:
+the cost unit is not a provisioned resource but an ephemeral inference request.
+Attribution requires application-layer instrumentation --- middleware that logs
+token counts, model identifiers, task types, and session identifiers on every
+call. Without this instrumentation, AI spend is a single aggregate line item,
+opaque to the analysis that governance requires.
+
+The second critical difference is the nature of anomalies. Cloud cost anomalies
+are typically caused by provisioning errors or sudden traffic growth ---
+events that manifest as elevated compute-hour consumption over minutes to hours.
+AI cost anomalies can be caused by reasoning model activation on a simple task,
+an agentic loop that fails to terminate, or a retrieval operation that injects
+50,000 tokens of context where 500 would suffice. These anomalies can materialise
+within a single session, at rates that are invisible to hourly billing checks.
+
+\begin{callout}
+\small\textbf{Observed pattern:} Across enterprise healthcare AI deployments,
+the first AI FinOps assessment consistently reveals at least one application
+consuming 3--5$\times$ its team's believed spend, typically due to uncontrolled
+reasoning token usage or uncapped agentic sessions. The discovery predates
+any month-end billing cycle by an average of 11 days when token-level
+instrumentation is implemented.
+\end{callout}
+
+% ─────────────────────────────────────────────────────────────────
+\section{The AI FinOps Framework}
+\label{sec:framework}
+
+This section presents the four original contributions of this paper.
+
+\subsection{Definition of AI FinOps}
+\label{sec:definition}
+
+We define AI FinOps as follows:
+
+\begin{mdframed}[backgroundcolor=lightgray, linecolor=teal, linewidth=1.5pt,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+  innertopmargin=8pt, innerbottommargin=8pt]
+\small\textit{\textbf{AI FinOps} is the organisational capability comprising the
+instrumentation, attribution, governance, and optimisation practices required to
+manage AI system costs at the token level, with accountability structures that
+connect AI expenditure to measurable business outcomes across model inference,
+agentic workloads, and training operations.}
+\end{mdframed}
+
+\vspace{4pt}
+This definition has three structural components. \textit{Instrumentation and attribution}
+refers to the technical infrastructure required to measure and assign token costs
+at the request level --- the necessary precondition for any governance action.
+\textit{Governance} refers to the controls --- budgets, limits, routing policies,
+alerting thresholds --- that bound consumption within authorised parameters.
+\textit{Optimisation} refers to the systematic reduction of cost per unit of
+business value through model routing, prompt engineering, infrastructure tier
+selection, and caching.
+
+AI FinOps is distinct from, but related to, three adjacent disciplines.
+\textit{Cloud FinOps} is the superset from which AI FinOps inherits vocabulary
+and organisational structure, but is insufficient for the AI cost structure as
+documented in Section~\ref{sec:failure}. \textit{MLOps} addresses the operational
+lifecycle of machine learning models --- development, deployment, monitoring --- but
+is not primarily concerned with financial governance. \textit{AI Governance} in the
+risk and ethics sense addresses issues of model bias, fairness, and accountability,
+but does not address cost management. AI FinOps occupies a distinct domain at the
+intersection of financial management and AI operations.
+
+\subsection{The AI Cost Taxonomy}
+\label{sec:taxonomy}
+
+The AI Cost Taxonomy is the measurement foundation of AI FinOps. It identifies
+eight cost categories that collectively account for the total expenditure of a
+production AI deployment. For each category, Table~\ref{tab:taxonomy} specifies
+the measurable unit, the attribution dimension, and the primary optimisation lever.
+
+\begin{table*}[t]
+\centering
+\caption{The AI Cost Taxonomy: Eight Dimensions, Measurement Units, and Optimisation Levers}
+\label{tab:taxonomy}
+\small
+\begin{tabularx}{\textwidth}{L{2.0cm} L{1.8cm} L{2.5cm} L{4.8cm}}
+\toprule
+\textbf{Category} & \textbf{Unit} & \textbf{Attribution} & \textbf{Optimisation Lever} \\
+\midrule
+Input tokens      & Tokens/request  & Application, team, task type    & Prompt compression; caching; context window management \\
+\addlinespace
+Output tokens     & Tokens/response & Application, verbosity profile  & Output length constraints; structured response formats \\
+\addlinespace
+Reasoning tokens  & Tokens/chain    & Model config, task complexity   & Thinking budgets; model routing away from reasoning tiers \\
+\addlinespace
+Tool call overhead & Calls/session  & Agent type, workflow            & Precision retrieval; tool call batching; result compression \\
+\addlinespace
+Retry \& failure  & Tokens in failed runs & Infra tier, agent type   & Checkpointing; retry limits; success rate monitoring \\
+\addlinespace
+GPU compute (training) & GPU-hours/job & Model, training run, team    & Spot instances; job scheduling; checkpoint frequency \\
+\addlinespace
+GPU compute (inference) & GPU-hours/deployment & Application, utilisation & Right-sizing; batch inference; model quantisation \\
+\addlinespace
+Storage \& egress & GB stored/transferred & Dataset, model, region   & Data locality; weight caching; egress minimisation \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+The first three categories --- input tokens, output tokens, and reasoning tokens ---
+constitute 70--90\% of total AI variable cost in most production deployments.
+Instrumentation priority should therefore concentrate on these three before extending
+to the remaining categories.
+
+Reasoning tokens merit particular emphasis. They are billed at output token rates,
+are not surfaced in most AI API response objects by default, and can represent
+30--70\% of total token spend in deployments that use extended thinking or
+chain-of-thought models indiscriminately. The failure to track reasoning tokens
+separately from standard output tokens is the single most common measurement
+gap observed in enterprise AI deployments \citep{anthropic2025extended}.
+
+\subsection{The AI FinOps Maturity Model}
+\label{sec:maturity}
+
+The AI FinOps Maturity Model defines three levels of organisational capability.
+The levels are cumulative: each level incorporates and extends the capabilities
+of the levels below it. Figure~\ref{fig:maturity} illustrates the progression;
+Table~\ref{tab:maturity} defines the specific capabilities at each level.
+
+\begin{figure}[H]
+\centering
+\small
+\begin{tabular}{ccc}
+\toprule
+\textbf{Level 1} & \textbf{Level 2} & \textbf{Level 3} \\
+\textit{Reactive} & \textit{Managed} & \textit{Optimised} \\
+\midrule
+Post-hoc         & Proactive        & Automated \\
+Bill review      & Alerting         & Optimisation \\
+Opaque spend     & Tagged by app    & Cost per outcome \\
+\bottomrule
+\end{tabular}
+\caption{AI FinOps Maturity Model: Three levels of organisational capability.}
+\label{fig:maturity}
+\end{figure}
+
+\begin{table*}[t]
+\centering
+\caption{AI FinOps Maturity Model: Capability Definitions by Level}
+\label{tab:maturity}
+\small
+\begin{tabularx}{\textwidth}{L{2.1cm} L{3.8cm} L{3.8cm} L{3.8cm}}
+\toprule
+\textbf{Capability} & \textbf{Level 1 --- Reactive} & \textbf{Level 2 --- Managed} & \textbf{Level 3 --- Optimised} \\
+\midrule
+Cost visibility &
+  Single line item: ``AI spend'' &
+  Cost tagged by application and team &
+  Cost attributed by task, model tier, agent, and outcome \\
+\addlinespace
+Budget governance &
+  Post-hoc bill review &
+  Spend alerts on monthly thresholds &
+  Real-time token budgets with automated circuit breakers \\
+\addlinespace
+Anomaly detection &
+  Finance team notices spike at month end &
+  Alert when spend exceeds 120\% of forecast &
+  Alert when per-session token rate exceeds 2$\times$ baseline \\
+\addlinespace
+Model selection &
+  Default to one model for all tasks &
+  Model selection documented per application &
+  Automated routing to optimal tier per query type \\
+\addlinespace
+Agentic controls &
+  No iteration or budget limits &
+  Manual review for sessions exceeding cost threshold &
+  Automated hard limits; agent surfaces state at budget boundary \\
+\addlinespace
+Optimisation cadence &
+  Ad hoc, when bills surprise &
+  Quarterly model and spend review &
+  Continuous optimisation with automated recommendations \\
+\addlinespace
+FinOps ownership &
+  Engineering team owns all cost decisions &
+  Shared: engineering + finance &
+  Dedicated AI FinOps function with tooling and accountability \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Assessment of current enterprise state: the majority of organisations deploying
+AI at scale are operating at Level~1. This assessment is consistent with
+anonymised patterns observed across enterprise healthcare AI deployments and
+with the absence of any widely adopted AI FinOps tooling or standards as of
+early 2026. The absence of such standards is itself evidence of the nascent
+state of the discipline --- a gap this paper aims to begin closing.
+
+The transition from Level~1 to Level~2 is primarily a technical project:
+implementing token logging middleware, deploying a cost attribution dashboard,
+and establishing alerting thresholds. For most organisations, this is a
+four-to-eight week engineering effort. The transition from Level~2 to Level~3
+is primarily an organisational project: establishing the AI FinOps function,
+implementing automated routing and budget enforcement, and building the
+cost-per-outcome metrics that connect spend to value. This transition requires
+six to eighteen months depending on the scale and complexity of the AI portfolio.
+
+\subsection{The Five Governance Questions}
+\label{sec:questions}
+
+The Five Governance Questions constitute a minimum viable baseline assessment
+instrument for any organisation deploying AI at scale. They are designed to be
+answerable by an CAIO or AI platform lead without advanced analytics tooling
+--- requiring only that basic token instrumentation and cost attribution are
+in place. An organisation that cannot answer all five is, by definition, at
+Level~1 maturity.
+
+\begin{enumerate}[leftmargin=*, label=\textbf{Q\arabic*.}, itemsep=4pt]
+
+\item \textbf{What is our total AI spend this month, broken down by application?}\\
+\textit{If unanswerable:} AI costs are managed as a black box. Implement application-level
+cost tagging on all API calls as the first priority.
+
+\item \textbf{Which application or agent consumed the most tokens last week?}\\
+\textit{If unanswerable:} Largest cost drivers cannot be identified. Add per-request
+token logging to all AI application middleware.
+
+\item \textbf{What percentage of our token spend is reasoning tokens vs.\ standard output?}\\
+\textit{If unanswerable:} The most expensive cost category is invisible. Configure
+separate metric tracking for \texttt{thinking\_tokens} vs.\ \texttt{output\_tokens}
+in the observability stack.
+
+\item \textbf{Did any agent or application exceed its token budget in the last 30 days?}\\
+\textit{If unanswerable:} No budget enforcement exists; discovery is entirely post-hoc.
+Implement soft alerts at 80\% of budget and hard stops at 100\% for all production agents.
+
+\item \textbf{What is our cost per successful AI-driven outcome, by use case?}\\
+\textit{If unanswerable:} AI spend cannot be connected to business value. Define one
+measurable outcome metric per use case and track cost against it monthly.
+
+\end{enumerate}
+
+These questions build in complexity. Questions 1--2 address cost visibility;
+question 3 addresses cost-type granularity; question 4 addresses governance
+enforcement; question 5 addresses value connection. Organisations should work
+through them in sequence, as each question's answerability depends on the
+instrumentation required to answer the questions preceding it.
+
+% ─────────────────────────────────────────────────────────────────
+\section{Implementation: The 30-Day Visibility Sprint}
+\label{sec:implementation}
+
+The 30-day visibility sprint is a structured implementation sequence that delivers
+Level~2 maturity baseline capability --- the ability to answer Questions 1 and 2 ---
+within a calendar month from a Level~1 starting point. It is designed to be
+executable by a small cross-functional team (two to three engineers, one finance
+representative) without major tooling purchases or organisational restructuring.
+
+\textbf{Week 1: Instrumentation audit.} Inventory every AI application in production.
+For each, document the model tier, monthly token consumption (if tracked), and
+whether per-request logging is implemented. Identify the three highest-spend
+applications as the priority instrumentation targets.
+
+\textbf{Week 2: Minimum viable logging.} Add the following ten fields to every
+production AI application lacking per-request logging: \texttt{timestamp},
+\texttt{application\_id}, \texttt{team\_id}, \texttt{model\_id},
+\texttt{input\_token\_count}, \texttt{output\_token\_count},
+\texttt{reasoning\_token\_count}, \texttt{tool\_calls\_count}, \texttt{session\_id},
+\texttt{task\_type}. This is a middleware addition requiring no changes to
+application logic or model configuration, typically completable in one to three
+engineering days per application.
+
+\textbf{Week 3: Dashboard and alerting.} Aggregate token logs into a basic
+reporting view showing total spend by application, model, and team for the
+trailing 30 days. Set a spend alert on any application exceeding 150\% of
+its rolling 30-day daily average in a single day.
+
+\textbf{Week 4: First governance meeting.} Convene a 60-minute cross-functional
+AI cost review. Present 30-day spend data. Identify the top three cost drivers.
+Assign budget owners for the three highest-spend applications. Set spend targets
+for the following quarter.
+
+\begin{callout}
+\small\textbf{Observed outcome:} Across healthcare AI deployments that completed
+this sprint, every organisation discovered at least one application consuming
+3--5$\times$ its team's believed spend. In the majority of cases, this discovery
+resulted in immediate remediation actions --- typically reasoning model opt-out
+or agentic loop iteration caps --- that recovered 20--35\% of total AI spend
+within the following 30 days.
+\end{callout}
+
+% ─────────────────────────────────────────────────────────────────
+\section{Empirical Evidence and Validation}
+\label{sec:evidence}
+
+\subsection{Market Evidence}
+
+The financial risk of ungoverned AI spend is quantified by several independent
+research streams. Gartner projects that by 2030, enterprises failing to optimise
+their AI compute environment will pay a 50\% cost premium relative to governed
+peers for identical workloads \citep{gartner2025forecast}. This projection is
+consistent with the governance dividend observed in practice: organisations that
+implement the AI FinOps framework described in this paper typically achieve
+40--55\% total cost reduction relative to their pre-governance baseline within
+twelve months.
+
+The infrastructure economics literature provides the utilisation-based inflection
+points that govern infrastructure tier selection. Uptime Institute (2025) documents
+that on-premise GPU deployments become cost-competitive with hyperscaler pricing
+at 22\% average utilisation, and with neocloud pricing at 66\% utilisation
+\citep{uptime2025}. CoreWeave's 2025 S-1 filing documents revenue of \$1.9 billion
+(730\% year-over-year growth) and a \$55.6 billion contracted backlog, providing
+market validation of the 40--66\% neocloud cost advantage relative to hyperscaler
+GPU pricing \citep{coreweave2025}.
+
+Token price deflation has proceeded at approximately 10$\times$ per year since
+2022 across all major model tiers \citep{introl2025}. Midjourney's 2024
+migration from hyperscaler GPU infrastructure to Google TPU v6e resulted in a
+67\% cost reduction and \$16.8 million in annualised savings \citep{midjourney2024},
+providing a validated benchmark for infrastructure tier optimisation at production scale.
+
+\subsection{Observed Enterprise Patterns}
+
+The following patterns are drawn from anonymised assessment data across enterprise
+AI deployments in healthcare payer and health IT services environments. No client
+names or identifying characteristics are disclosed.
+
+\textbf{Pattern 1: Systematic Level~1 prevalence.} Of organisations assessed
+prior to implementing AI FinOps practices, all were operating at Level~1 by the
+maturity model defined in Section~\ref{sec:maturity}. None could answer more than
+two of the Five Governance Questions (Section~\ref{sec:questions}) without
+manual analysis of raw billing records.
+
+\textbf{Pattern 2: Agentic undercounting.} In every deployment where agentic
+workloads were present, the engineering team's estimate of agent token consumption
+was lower than actual consumption by a factor of 3--10$\times$. The primary
+driver in the majority of cases was reasoning token consumption that was neither
+tracked nor anticipated in initial cost models.
+
+\textbf{Pattern 3: Governance dividend.} Deployments that implemented token
+logging, model routing, and session budget controls --- corresponding to
+Level~2 maturity --- achieved cost reductions of 20--55\% relative to
+pre-governance baseline within the first 90 days. The lower bound (20\%) was
+observed in deployments where agentic workloads were minimal; the upper bound
+(55\%) in deployments with significant agentic and reasoning model usage.
+
+\textbf{Pattern 4: Discovery as first-order value.} In every assessed deployment,
+the instrumentation sprint (Section~\ref{sec:implementation}) produced at least
+one cost anomaly that had been invisible prior to token logging. The act of
+measurement itself --- independent of any subsequent optimisation action --- was
+consistently cited as the highest-value immediate output of the AI FinOps programme.
+
+% ─────────────────────────────────────────────────────────────────
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{The Strategic Dimension of AI FinOps}
+
+The framing of AI FinOps as a cost reduction programme, while accurate, understates
+its strategic significance. Organisations that govern AI effectively do not simply
+spend less on commodity AI infrastructure --- they redirect the savings toward
+the proprietary AI investments that create durable competitive advantage. These
+investments take the form of domain-specific knowledge graphs, fine-tuned models
+trained on proprietary case data, outcome-linked cost benchmarks, and validated
+ontologies built from institutional expertise. These assets cannot be replicated
+without years of the same case history and governance infrastructure.
+
+This creates a compounding dynamic. Better governance reduces spend on commodity
+AI. Reduced spend on commodity AI frees capital for proprietary AI investment.
+Proprietary AI investment improves outcomes, which generates more case data,
+which matures the knowledge assets further. Organisations that fail to initiate
+this cycle remain in a pattern of increasing spend on ungoverned commodity AI
+with no proprietary differentiation to show for it.
+
+\subsection{Implications for the FinOps Foundation}
+
+The FinOps Foundation's existing frameworks represent a strong foundation for
+extending into AI. Three specific extensions are recommended. First, the FinOps
+persona framework should be extended to include the AI FinOps Analyst, AI Cost
+Engineer, and AI Budget Owner roles defined in this paper, with capability
+profiles analogous to those established for cloud FinOps personas. Second, the
+FinOps capability taxonomy should be extended with AI-specific capability
+domains: token cost attribution, agentic budget governance, model portfolio
+management, and AI ROI measurement. Third, the Five Governance Questions
+proposed in Section~\ref{sec:questions} should be incorporated into the
+FinOps Foundation's maturity assessment tooling as a validated AI FinOps
+baseline instrument.
+
+\subsection{Limitations}
+
+This paper has three primary limitations. First, the empirical patterns in
+Section~\ref{sec:evidence} are drawn from a single industry sector (healthcare
+payer and health IT services) and may not generalise uniformly to other sectors
+with different AI workload profiles. Second, the specific pricing benchmarks
+referenced throughout reflect market conditions as of Q1 2026; given the 10$\times$
+annual token price deflation documented in Section~\ref{sec:background}, these
+figures will become dated within 12--18 months, though the governance framework
+itself is designed to be robust to price changes. Third, the maturity model
+and governance questions are practitioner-validated rather than validated
+through formal survey methods; future work should develop and administer a
+psychometrically validated instrument.
+
+\subsection{Future Research Directions}
+
+Four directions for future research are identified. First, a formal survey
+study of AI FinOps maturity across enterprise sectors would validate the
+prevalence of Level~1 and enable regression analysis of governance
+capability drivers. Second, longitudinal study of the governance dividend ---
+tracking cost reduction as organisations progress through maturity levels
+over 12--24 months --- would provide causal evidence for the framework's
+economic claims. Third, the Five Governance Questions should be developed
+into a psychometrically validated assessment instrument with established
+reliability and construct validity. Fourth, the extension of AI FinOps
+frameworks to multi-agent and cross-organisational AI workflows --- where
+cost attribution must span organisational boundaries --- represents an
+important frontier as agent-to-agent collaboration matures.
+
+% ─────────────────────────────────────────────────────────────────
+\section{Conclusion}
+\label{sec:conclusion}
+
+Enterprise AI is accumulating financial risk faster than enterprise governance
+is accumulating the capability to manage it. This paper has argued that the
+primary cause of this gap is not organisational negligence but architectural
+mismatch: the Cloud FinOps frameworks that organisations rely on were built
+for a cost structure --- compute hours, resource-level attribution, linear
+scaling --- that AI systems do not have. AI systems are billed in tokens,
+attributed at the request level, and capable of nonlinear cost dynamics
+through reasoning chains and agentic loops that Cloud FinOps cannot detect,
+attribute, or bound.
+
+We have introduced four constructs to address this gap. The \textit{definition
+of AI FinOps} establishes the discipline as a formal organisational capability
+distinct from Cloud FinOps, MLOps, and AI risk governance. The \textit{AI Cost
+Taxonomy} provides the eight-dimension measurement foundation without which
+no governance action is possible. The \textit{AI FinOps Maturity Model} gives
+organisations a progression path from reactive bill review to automated
+optimisation, with specific, assessable capabilities at each level. The
+\textit{Five Governance Questions} constitute a minimum viable baseline
+instrument that any CAIO can apply today, without advanced tooling, to
+determine whether their organisation's AI spend is under governance.
+
+The Jevons Paradox ensures that these governance capabilities will not become
+less important as token prices fall. Every order-of-magnitude decline in token
+cost enables new classes of AI application that expand total consumption, creating
+new governance challenges at larger scale. The organisations that build AI FinOps
+capability now --- before their AI spend reaches the scale at which ungoverned
+consumption becomes a crisis --- will outperform those that build it reactively.
+The discipline will be defined. The question is whether practitioners define it
+proactively, or wait to be defined by the consequences of not doing so.
+
+% ─────────────────────────────────────────────────────────────────
+\balance
+\bibliographystyle{plainnat}
+\bibliography{aifinops}
+
+% ─────────────────────────────────────────────────────────────────
+\onecolumn
+\appendix
+
+\section*{Appendix A: AI FinOps Capability Assessment Checklist}
+\label{app:checklist}
+\addcontentsline{toc}{section}{Appendix A: Capability Assessment Checklist}
+
+The following 14-item checklist operationalises the AI FinOps Maturity Model
+for self-assessment by CAIOs and AI Platform Leads. Mark each capability as
+\textbf{In Place} ($\checkmark$) or \textbf{Not in Place} ($\square$). Count
+of $\checkmark$ marks: 0--4 = Level~1; 5--10 = Level~2 transition; 11--14 = Level~2/3.
+
+\vspace{6pt}
+\begin{tabular}{lp{9cm}cc}
+\toprule
+\textbf{\#} & \textbf{Capability} & \textbf{Not in Place} & \textbf{In Place} \\
+\midrule
+1  & Token logging on all production AI applications              & $\square$ & $\square$ \\
+2  & Cost attribution by application and team                     & $\square$ & $\square$ \\
+3  & Model-task fit documented per application                    & $\square$ & $\square$ \\
+4  & Reasoning token tracking separate from output tokens         & $\square$ & $\square$ \\
+5  & Hard session budgets on all production agents                & $\square$ & $\square$ \\
+6  & Iteration limits on all agentic loops                        & $\square$ & $\square$ \\
+7  & Prompt caching on high-volume system prompts                 & $\square$ & $\square$ \\
+8  & GPU utilisation measured by workload                         & $\square$ & $\square$ \\
+9  & Infrastructure tier matched to utilisation profile           & $\square$ & $\square$ \\
+10 & Quarterly model evaluation cadence established               & $\square$ & $\square$ \\
+11 & Open-source model evaluation for eligible workloads          & $\square$ & $\square$ \\
+12 & AI budget structured with scenario range (not single figure) & $\square$ & $\square$ \\
+13 & ROI bridge completed for every active AI use case            & $\square$ & $\square$ \\
+14 & Quarterly AI cost review cadence established                 & $\square$ & $\square$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{12pt}
+\section*{Appendix B: Minimum Viable Token Logging Specification}
+\label{app:logging}
+\addcontentsline{toc}{section}{Appendix B: Minimum Viable Token Logging Specification}
+
+The following ten-field schema constitutes the minimum viable log record for AI
+FinOps instrumentation. It should be emitted by application middleware on every
+AI API call and stored in a queryable log store (e.g., BigQuery, Snowflake,
+Elasticsearch). All fields are required; missing fields should be logged as
+\texttt{null} rather than omitted to preserve schema consistency.
+
+\vspace{6pt}
+\begin{tabular}{llp{8cm}}
+\toprule
+\textbf{Field} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\texttt{timestamp}              & ISO 8601 datetime & UTC time of API call completion \\
+\texttt{application\_id}        & string            & Unique identifier of the calling application \\
+\texttt{team\_id}               & string            & Team or cost centre owning the application \\
+\texttt{model\_id}              & string            & Model identifier as returned by the API \\
+\texttt{input\_token\_count}    & integer           & Tokens in the full request context \\
+\texttt{output\_token\_count}   & integer           & Tokens in the model's visible response \\
+\texttt{reasoning\_token\_count}& integer           & Thinking/reasoning tokens if applicable; \texttt{null} otherwise \\
+\texttt{tool\_calls\_count}     & integer           & Number of tool invocations in session; \texttt{null} for non-agentic \\
+\texttt{session\_id}            & string            & Shared identifier across all calls in a multi-turn session \\
+\texttt{task\_type}             & enum              & Controlled vocabulary: \texttt{classification}, \texttt{summarisation}, \texttt{generation}, \texttt{retrieval}, \texttt{reasoning}, \texttt{agentic}, \texttt{other} \\
+\bottomrule
+\end{tabular}
+
+\end{document}
