@@ -1,7 +1,6 @@
 # AI FinOps: Why Cloud Financial Governance Fails for Intelligent Systems — and a Framework for What Replaces It
 
 **Author:** Sathiyan Kutty  
-**Affiliation:** Chief AI Officer, EMIDS Healthcare IT  
 **Contact:** [linkedin.com/in/skutty](https://www.linkedin.com/in/skutty/)  
 **Status:** Submitted to the FinOps Foundation — March 2026  
 **License:** CC BY 4.0
