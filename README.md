@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/1177145798.svg)](https://doi.org/10.5281/zenodo.18928042)
+
 # AI FinOps: Why Cloud Financial Governance Fails for Intelligent Systems — and a Framework for What Replaces It
 
 **Author:** Sathiyan Kutty  
